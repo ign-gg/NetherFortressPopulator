@@ -1,5 +1,6 @@
 package cn.wode490390.nukkit.nbpop;
 
+import cn.nukkit.Server;
 import cn.nukkit.event.EventHandler;
 import cn.nukkit.event.Listener;
 import cn.nukkit.event.level.ChunkPopulateEvent;
@@ -12,7 +13,6 @@ import cn.nukkit.plugin.PluginBase;
 import cn.wode490390.nukkit.nbpop.populator.PopulatorNetherFortress;
 import cn.wode490390.nukkit.nbpop.scheduler.ChunkPopulationTask;
 import cn.wode490390.nukkit.nbpop.structure.NetherBridgePieces;
-import cn.wode490390.nukkit.nbpop.util.MetricsLite;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
@@ -35,10 +35,10 @@ public class NetherFortressPlugin extends PluginBase implements Listener {
 
     @Override
     public void onEnable() {
-        try {
-            new MetricsLite(this, 7727);
-        } catch (Throwable ignore) {
-
+        if (!"IGN".equals(getServer().getCodename())) {
+            getLogger().error("Incompatible Nukkit version!");
+            getServer().getPluginManager().disablePlugin(this);
+            return;
         }
 
         NetherBridgePieces.init();

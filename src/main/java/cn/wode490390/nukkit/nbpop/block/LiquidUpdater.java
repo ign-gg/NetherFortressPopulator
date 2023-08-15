@@ -1,8 +1,9 @@
 package cn.wode490390.nukkit.nbpop.block;
 
-import cn.nukkit.Server;
 import cn.nukkit.block.Block;
 import cn.nukkit.level.ChunkManager;
+import cn.nukkit.level.Level;
+import cn.nukkit.level.format.FullChunk;
 import cn.nukkit.math.BlockVector3;
 
 public final class LiquidUpdater {
@@ -13,9 +14,14 @@ public final class LiquidUpdater {
 
     private static void lavaSpread(ChunkManager level, int x, int y, int z, int counter) {
         if (counter > 100) {
-            Server.getInstance().getLogger().error("[NetherFortressPopulator] LiquidUpdater#lavaSpread: too many iterations");
+            FullChunk chunk;
+            if (level instanceof Level && (chunk = level.getChunk(x >> 4, z >> 4)) != null) {
+                Block block = Block.get(((Level) level).getFullBlock(chunk, x, y, z), (Level) level, x, y, z);
+                ((Level) level).scheduleUpdate(block, block, 10, 0, false);
+            }
             return;
         }
+
         if (level.getChunk(x >> 4, z >> 4) == null) {
             return;
         }
